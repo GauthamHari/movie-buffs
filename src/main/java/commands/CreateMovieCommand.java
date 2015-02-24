@@ -15,11 +15,11 @@ public class CreateMovieCommand {
 		try {
 			Connection connection = ConnectionProvider.getConnection();
 			PreparedStatement stmt = connection
-					.prepareStatement("INSERT INTO MOVIES(title, duration, language, country) VALUES(?, ?, ?, ?) Returning id");
+					.prepareStatement("INSERT INTO MOVIES(title, duration, language, year) VALUES(?, ?, ?, ?) Returning id");
 			stmt.setString(1, m.getTitle());
 			stmt.setString(2, m.getDuration());
 			stmt.setString(3, m.getLanguage());
-			stmt.setString(4, m.getCountry());
+			stmt.setString(4, m.getYear());
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				return rs.getString("id");

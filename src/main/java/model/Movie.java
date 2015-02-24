@@ -6,7 +6,7 @@ public class Movie {
 	private String title;
 	private String duration;
 	private String language;
-	private String country;
+	private String year;
 	
 	public int getId() { 
 		return id;	
@@ -32,10 +32,10 @@ public class Movie {
 	public void setLanguage(String language) { 
 		this.language = language; 
 	}
-	public String getCountry() { 
-		return country;	
+	public String getYear() { 
+		return year;	
 	}
-	public void setCountry(String country) {
-		this.country = country;
+	public void setYear(String year) {
+		this.year = year;
 	}
 }

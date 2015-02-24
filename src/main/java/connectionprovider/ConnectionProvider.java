@@ -36,10 +36,10 @@ public class ConnectionProvider {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM movies");
 			while (rs.next()) {
-				System.out.println("Id: " + rs.getString("id"));
+				System.out.println("\nId: " + rs.getString("id"));
 				System.out.println("Title: " + rs.getString("title"));
 				System.out.println("Language: " + rs.getString("language"));
-				System.out.println("Country: " + rs.getString("country"));
+				System.out.println("Year: " + rs.getString("year"));
 				System.out.println("Running time: " + rs.getString("duration"));
 			}
 		} catch (URISyntaxException e) {

@@ -13,11 +13,11 @@ public class UpdateMovieCommand {
 		try {
 			Connection connection = ConnectionProvider.getConnection();
 			PreparedStatement stmt = connection
-					.prepareStatement("UPDATE MOVIES SET title=?, duration=?, language=?, country=? WHERE id=?");
+					.prepareStatement("UPDATE MOVIES SET title=?, duration=?, language=?, year=? WHERE id=?");
 			stmt.setString(1, m.getTitle());
 			stmt.setString(2, m.getDuration());
 			stmt.setString(3, m.getLanguage());
-			stmt.setString(4, m.getCountry());
+			stmt.setString(4, m.getYear());
 			stmt.setInt(5, m.getId());
 			stmt.executeUpdate();
 		} catch (URISyntaxException e) {

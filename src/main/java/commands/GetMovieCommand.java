@@ -23,7 +23,7 @@ public class GetMovieCommand {
 				m.setTitle(rs.getString("title"));
 				m.setDuration(rs.getString("duration"));
 				m.setLanguage(rs.getString("language"));
-				m.setCountry(rs.getString("country"));
+				m.setYear(rs.getString("year"));
 			}
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
@@ -46,7 +46,7 @@ public class GetMovieCommand {
 				m.setTitle(rs.getString("title"));
 				m.setDuration(rs.getString("duration"));
 				m.setLanguage(rs.getString("language"));
-				m.setCountry(rs.getString("country"));
+				m.setYear(rs.getString("year"));
 			}
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
