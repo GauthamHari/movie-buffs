@@ -124,7 +124,7 @@ public class Services {
 		return Response.status(200).entity(movieString).build();
 	}
 		
-	// get song by title
+	// get movie by title
 	@GET
 	@Path("gettitle/{title}")
 	@Produces({ MediaType.APPLICATION_JSON })
