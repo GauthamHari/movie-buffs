@@ -4,16 +4,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import model.Movie;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.RequestToken;
@@ -25,15 +22,16 @@ import info.movito.themoviedbapi.model.core.MovieResultsPage;
 import info.movito.themoviedbapi.model.keywords.Keyword;
 import info.movito.themoviedbapi.model.people.*;
 import commands.DB;
-import commands.ListMoviesCommand;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
 @Path("/movies")
 public class MovieService {
 	private static String apikey = "";
+	
 	TmdbGenre genre = new TmdbApi(apikey).getGenre();
+	TmdbMovies movies = new TmdbApi(apikey).getMovies();
+	
 	ObjectMapper mapper = new ObjectMapper();
 
 	// Browse all genres
@@ -41,15 +39,13 @@ public class MovieService {
 	@Path("/getgenrelist")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response browseGenres(@QueryParam("offset") int offset,
-			@QueryParam("count") int count) {
-		ArrayList<Genre> g = new ArrayList<Genre>();
+		@QueryParam("count") int count) {
 		
-		for(Genre item : genre.getGenreList("en")) {
-			g.add(item);
-		}
+		ArrayList<Genre> glist = new ArrayList<Genre>();
+		glist.addAll(genre.getGenreList("en"));
 		
 		HashMap<String, Object> hm = new HashMap<String, Object>();
-		hm.put(Constants.Pagination.DATA, g);
+		hm.put(Constants.Pagination.DATA, glist);
 		hm.put(Constants.Pagination.OFFSET, offset);
 		hm.put(Constants.Pagination.COUNT, count);
 		String movieString = null;
@@ -58,22 +54,19 @@ public class MovieService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		return Response.status(200).entity(movieString).build();
 	}
 	
 	// Browse all movies in a particular genre
 	@GET
-	@Path("/getgenremovies")
+	@Path("/getgenremovies/{genreid}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response browseMovies(@QueryParam("offset") int offset,
-			@QueryParam("count") int count, @QueryParam("genreid") int genreid) {
-		ArrayList<MovieDb> mdb = new ArrayList<MovieDb>();
+	public Response browseMoviesInGenre(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @PathParam("genreid") int genreid) {
 		
+		ArrayList<MovieDb> mdb = new ArrayList<MovieDb>();
 		MovieResultsPage mg = genre.getGenreMovies(genreid, "en", 1, true);
-		for(MovieDb m : mg.getResults()) {
-			mdb.add(m);	
-		}
+		mdb.addAll(mg.getResults());	
 		
 		HashMap<String, Object> hm = new HashMap<String, Object>();
 		hm.put(Constants.Pagination.DATA, mdb);
@@ -88,109 +81,308 @@ public class MovieService {
 		return Response.status(200).entity(movieString).build();
 	}
 	
-	public static void main(String[] args) {
-		TmdbMovies movies = new TmdbApi(apikey).getMovies();
-		TmdbGenre genre = new TmdbApi(apikey).getGenre();
+	// Search a movie by id 
+	@GET
+	@Path("/getmovie/{movieid}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getMovieById(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @PathParam("movieid") int movieid) {
+		
+		MovieDb m = movies.getMovie(movieid, "en");
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		
+		hm.put(Constants.Pagination.DATA, m);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
 	
-		//-----------------------------------------------------------------------------------------
-		//MOVIES
-		System.out.println("\n1. getMovie = " + movies.getMovie(157336, "en"));
-	
-		System.out.println("\n2. Result of getAlternativeTitles = ");
+	// Get alternative titles for a movie 
+	@GET
+	@Path("/getmoviealternativetitles/{movieid}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getMovieAlternativeTitles(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @PathParam("movieid") int movieid) {
+		
 		ArrayList<AlternativeTitle> tlist = new ArrayList<AlternativeTitle>();
-		tlist.addAll(movies.getAlternativeTitles(11282, "us"));
-		for ( AlternativeTitle item : tlist) {
-			System.out.println(item.getTitle());
-		}
-	
-		System.out.println("\n3. Result of getCredits:");
-		Credits credit = movies.getCredits(11282);
-		System.out.println("CAST");
-		for(PersonCast cast : credit.getCast()) {
-			System.out.println(cast.getName());
-		}
-	
-		System.out.println("\nCREW");
-		for(PersonCrew crew : credit.getCrew()) {
-			System.out.println(crew.getName());
-		}
-	
-		System.out.println("\n4. getImages = ");
-		MovieImages i = movies.getImages(157336, "en");
-		for (Artwork art : i.getPosters()) {
-			System.out.println(art.getFilePath() + " - " + art.getArtworkType() + " - " + art.getLanguage());
-		}
-	
-		System.out.println("\n5. getKeywords = ");
-		for(Keyword key : movies.getKeywords(157336)) {
-			System.out.println(key.getName());
-		}
-	
-		System.out.println("\n6. getReleaseInfo = ");
-		for(ReleaseInfo info : movies.getReleaseInfo(157336, "en")) {
-			System.out.println(info.getCountry() + " " + info.getReleaseDate() + " " + info.getCertification());
-		}
-	
-		System.out.println("\n7. getVideos = ");
-		for(Video v : movies.getVideos(157336, "en")) {
-			System.out.println(v.getType() + " - " + v.getName() + " - " + v.getSize() + " - " + v.getSite());
-		}
-	
-		System.out.println("\n8. getTranslations = ");
-		for(Translation t : movies.getTranslations(157336)) {
-			System.out.println(t.getEnglishName());
-		}
-	
-		System.out.println("\n9. getSimilarMovies = ");
-		MovieResultsPage ms = movies.getSimilarMovies(157336, "en", 1);
-		System.out.println("Total Results = " + ms.getTotalResults() + "\nTotal Pages = " + ms.getTotalPages());
-		for(MovieDb m : ms.getResults()) {
-			System.out.println(m.getTitle());	
-		}
-	
-		System.out.println("\n10. getUpcoming = ");
-		MovieResultsPage mu = movies.getUpcoming("en", 1);
-		System.out.println("Total Results = " + mu.getTotalResults() + "\nTotal Pages = " + mu.getTotalPages());
-		for(MovieDb m : mu.getResults()) {
-			System.out.println(m.getTitle());	
-		}
-	
-		System.out.println("\n11. getNowPlayingMovies = ");
-		MovieResultsPage mnp = movies.getNowPlayingMovies("en", 1);
-		System.out.println("Total Results = " + mnp.getTotalResults() + "\nTotal Pages = " + mnp.getTotalPages());
-		for(MovieDb m : mnp.getResults()) {
-			System.out.println(m.getTitle());	
-		}
-	
-		System.out.println("\n12. getPopularMoviesList = ");
-		MovieResultsPage mp = movies.getPopularMovieList("en", 1);
-		System.out.println("Total Results = " + mp.getTotalResults() + "\nTotal Pages = " + mp.getTotalPages());
-		for(MovieDb m : mp.getResults()) {
-			System.out.println(m.getTitle());	
-		}
-	
-		System.out.println("\n13. getTopRatedMovies = ");
-		MovieResultsPage mt = movies.getTopRatedMovies("en", 1);
-		System.out.println("Total Results = " + mt.getTotalResults() + "\nTotal Pages = " + mt.getTotalPages());
-		for(MovieDb m : mt.getResults()) {
-			System.out.println(m.getTitle());	
-		}
+		tlist.addAll(movies.getAlternativeTitles(movieid, "us"));
 		
-		//-----------------------------------------------------------------------------------------
-		//GENRES
-		System.out.println("\n1. getGenreList = ");
-		for(Genre g : genre.getGenreList("en")) {
-			System.out.println(g.getName() + " " + g.getId());
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, tlist);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	// Get credits for a movie 
+	@GET
+	@Path("/getmoviecredits/{movieid}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getMovieCredits(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @PathParam("movieid") int movieid) {
 		
-		System.out.println("\n2. getGenreMovies");
-		MovieResultsPage mg = genre.getGenreMovies(27, "en", 1, true);
-		System.out.println("Total Results = " + mg.getTotalResults() + "\nTotal Pages = " + mg.getTotalPages());
-		for(MovieDb m : mg.getResults()) {
-			System.out.println(m.getTitle());	
-		}	
+		Credits credit = movies.getCredits(movieid);
+		HashMap<String, Object> hm = new HashMap<String, Object>();
 		
-		//-----------------------------------------------------------------------------------------
+		hm.put(Constants.Pagination.DATA, credit);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	// Get Images for a movie 
+	@GET
+	@Path("/getmovieimages/{movieid}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getMovieImages(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @PathParam("movieid") int movieid) {
 		
+		MovieImages image = movies.getImages(movieid, "en");
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		
+		hm.put(Constants.Pagination.DATA, image);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}	
+	
+	// Get Keywords for a movie 
+	@GET
+	@Path("/getmoviekeywords/{movieid}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getMovieKeywords(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @PathParam("movieid") int movieid) {
+		
+		ArrayList<Keyword> klist = new ArrayList<Keyword>();
+		klist.addAll(movies.getKeywords(movieid));
+		
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, klist);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	// Get Release Info for a movie 
+	@GET
+	@Path("/getmoviereleaseinfo/{movieid}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getMovieReleaseInfo(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @PathParam("movieid") int movieid) {
+		
+		ArrayList<ReleaseInfo> rinfo = new ArrayList<ReleaseInfo>();
+		rinfo.addAll(movies.getReleaseInfo(movieid, "en"));
+		
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, rinfo);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	// Get Videos for a movie 
+	@GET
+	@Path("/getmovievideos/{movieid}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getMovieVideos(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @PathParam("movieid") int movieid) {
+		
+		ArrayList<Video> vlist = new ArrayList<Video>();
+		vlist.addAll(movies.getVideos(movieid, "en"));
+		
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, vlist);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	// Get Translations for a movie 
+	@GET
+	@Path("/getmovietranslations/{movieid}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getMovieTranslations(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @PathParam("movieid") int movieid) {
+	
+		ArrayList<Translation> tlist = new ArrayList<Translation>();
+		tlist.addAll(movies.getTranslations(movieid));
+			
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, tlist);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	// Get a list of similar movies for a movie
+	@GET
+	@Path("/getmoviessimilar/{movieid}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getSimilarMovies(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @PathParam("movieid") int movieid) {
+		
+		ArrayList<MovieDb> mdb = new ArrayList<MovieDb>();
+		MovieResultsPage mrp = movies.getSimilarMovies(movieid, "en", 1);
+		mdb.addAll(mrp.getResults());	
+			
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, mdb);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	// Get a list of upcoming movies
+	@GET
+	@Path("/getmoviesupcoming")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getUpcomingMovies(@QueryParam("offset") int offset,
+		@QueryParam("count") int count) {
+		
+		ArrayList<MovieDb> mdb = new ArrayList<MovieDb>();
+		MovieResultsPage mrp = movies.getUpcoming("en", 1);
+		mdb.addAll(mrp.getResults());	
+				
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, mdb);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	// Get a list of now-playing movies
+	@GET
+	@Path("/getmoviesnowplaying")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getNowPlayingMovies(@QueryParam("offset") int offset,
+		@QueryParam("count") int count) {
+		
+		ArrayList<MovieDb> mdb = new ArrayList<MovieDb>();
+		MovieResultsPage mrp = movies.getNowPlayingMovies("en", 1);
+		mdb.addAll(mrp.getResults());	
+				
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, mdb);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	// Get a list of popular movies
+	@GET
+	@Path("/getmoviespopular")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getPopularMovies(@QueryParam("offset") int offset,
+		@QueryParam("count") int count) {
+		
+		ArrayList<MovieDb> mdb = new ArrayList<MovieDb>();
+		MovieResultsPage mrp = movies.getPopularMovieList("en", 1);
+		mdb.addAll(mrp.getResults());	
+					
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, mdb);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	// Get a list of top-rated movies
+	@GET
+	@Path("/getmoviestoprated")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getTopRatedMovies(@QueryParam("offset") int offset,
+		@QueryParam("count") int count) {
+			
+		ArrayList<MovieDb> mdb = new ArrayList<MovieDb>();
+		MovieResultsPage mrp = movies.getTopRatedMovies("en", 1);
+		mdb.addAll(mrp.getResults());	
+						
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, mdb);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	public static void main(String[] args) {
+	
 	}
 }
