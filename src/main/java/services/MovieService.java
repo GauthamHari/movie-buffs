@@ -10,10 +10,14 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import model.Movie;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.RequestToken;
-
+import util.Constants;
 import info.movito.themoviedbapi.*;
 import info.movito.themoviedbapi.tools.*;
 import info.movito.themoviedbapi.model.*;
@@ -21,12 +25,68 @@ import info.movito.themoviedbapi.model.core.MovieResultsPage;
 import info.movito.themoviedbapi.model.keywords.Keyword;
 import info.movito.themoviedbapi.model.people.*;
 import commands.DB;
+import commands.ListMoviesCommand;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Path("/movies")
 public class MovieService {
 	private static String apikey = "";
+	TmdbGenre genre = new TmdbApi(apikey).getGenre();
+	ObjectMapper mapper = new ObjectMapper();
+
+	// Browse all genres
+	@GET
+	@Path("/getgenrelist")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response browseGenres(@QueryParam("offset") int offset,
+			@QueryParam("count") int count) {
+		ArrayList<Genre> g = new ArrayList<Genre>();
+		
+		for(Genre item : genre.getGenreList("en")) {
+			g.add(item);
+		}
+		
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, g);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	// Browse all movies in a particular genre
+	@GET
+	@Path("/getgenremovies")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response browseMovies(@QueryParam("offset") int offset,
+			@QueryParam("count") int count, @QueryParam("genreid") int genreid) {
+		ArrayList<MovieDb> mdb = new ArrayList<MovieDb>();
+		
+		MovieResultsPage mg = genre.getGenreMovies(genreid, "en", 1, true);
+		for(MovieDb m : mg.getResults()) {
+			mdb.add(m);	
+		}
+		
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, mdb);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
 	
 	public static void main(String[] args) {
 		TmdbMovies movies = new TmdbApi(apikey).getMovies();
