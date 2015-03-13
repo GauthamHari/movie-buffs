@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import util.Constants;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -20,11 +20,12 @@ import info.movito.themoviedbapi.model.core.SessionToken;
 
 @Path("/account")
 public class AccountService {
-	private static String apikey = "";
+	private static String apikey = ""; 						 // Add API key
 	TmdbAccount account = new TmdbApi(apikey).getAccount();
-	SessionToken st = new SessionToken("");
-	AccountID aid = new AccountID(6218283); // My account ID
+	SessionToken st = new SessionToken("");                  // Add Session token
+	AccountID aid = new AccountID(6218283); 				 // My account ID
 	ObjectMapper mapper = new ObjectMapper();
+	info.movito.themoviedbapi.TmdbAccount.MediaType m = info.movito.themoviedbapi.TmdbAccount.MediaType.valueOf("MOVIE");
 	
 	//---------------------------------------------------------------------------------------------
 	// ACCOUNT SERVICES (5)
@@ -97,7 +98,7 @@ public class AccountService {
 	@GET
 	@Path("/favorite/movies")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getFavoriteMovies(@QueryParam("offset") int offset,
+	public Response getAccountFavoriteMovies(@QueryParam("offset") int offset,
 		@QueryParam("count") int count) {
 		HashMap<String, Object> hm = new HashMap<String, Object>();
 		MovieResultsPage mrp = account.getFavoriteMovies(st, aid);
@@ -118,11 +119,112 @@ public class AccountService {
 	@GET
 	@Path("/watchlist/movies")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getWatchListMovies(@QueryParam("offset") int offset,
+	public Response getAccountWatchListMovies(@QueryParam("offset") int offset,
 		@QueryParam("count") int count) {
 		HashMap<String, Object> hm = new HashMap<String, Object>();
 		MovieResultsPage mrp = account.getWatchListMovies(st, aid, 1);
 		hm.put(Constants.Pagination.DATA, mrp);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	//---------------------------------------------------------------------------------------------
+	// 6) This method lets users rate a movie. 
+	@POST
+	@Path("/rate/movie")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response postMovieRating(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @QueryParam("movieid") int movieid, 
+		@QueryParam("rating") int rating) {
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, account.postMovieRating(st, movieid, rating));
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	//---------------------------------------------------------------------------------------------
+	// 7) Add a movie to an account's favorites list
+	@POST
+	@Path("/add/favorite/movie")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response addFavoriteMovie(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @QueryParam("movieid") int movieid) {
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, account.addFavorite(st, aid, movieid, m));
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	//---------------------------------------------------------------------------------------------
+	// 8) Remove a movie from an account's favorites list
+	@POST
+	@Path("/remove/favorite/movie")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response removeFavoriteMovie(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @QueryParam("movieid") int movieid) {
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, account.removeFavorite(st, aid, movieid, m));
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	//---------------------------------------------------------------------------------------------
+	// 9) Add a movie to an account's watch list
+	@POST
+	@Path("/add/watchlist/movie")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response addWatchlistMovie(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @QueryParam("movieid") int movieid) {
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, account.addToWatchList(st, aid, movieid, m));
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	//---------------------------------------------------------------------------------------------
+	// 10) Remove a movie from an account's watch list
+	@POST
+	@Path("/remove/watchlist/movie")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response removeWatchlistMovie(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @QueryParam("movieid") int movieid) {
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, account.removeFromWatchList(st, aid, movieid, m));
 		hm.put(Constants.Pagination.OFFSET, offset);
 		hm.put(Constants.Pagination.COUNT, count);
 		String movieString = null;

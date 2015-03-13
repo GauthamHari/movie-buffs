@@ -19,8 +19,8 @@ import commands.DB;
 
 @Path("/twitter")
 public class TwitterService {
-	String consumerKey = "";
-	String consumerSecret = "";
+	String consumerKey = ""; 	 // Add consumer key
+	String consumerSecret = "";  // Add consumer secret
 	
 	//---------------------------------------------------------------------------------------------
 	@GET
