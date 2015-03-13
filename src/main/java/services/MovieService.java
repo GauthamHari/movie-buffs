@@ -25,7 +25,9 @@ import info.movito.themoviedbapi.TmdbSearch.CollectionResultsPage;
 import info.movito.themoviedbapi.TmdbSearch.KeywordResultsPage;
 import info.movito.themoviedbapi.tools.*;
 import info.movito.themoviedbapi.model.*;
+import info.movito.themoviedbapi.model.core.AccountID;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
+import info.movito.themoviedbapi.model.core.SessionToken;
 import info.movito.themoviedbapi.model.keywords.Keyword;
 import info.movito.themoviedbapi.model.people.*;
 
@@ -37,6 +39,9 @@ public class MovieService {
 	TmdbMovies movies = new TmdbApi(apikey).getMovies();
 	TmdbSearch search = new TmdbApi(apikey).getSearch();
 	TmdbLists list = new TmdbApi(apikey).getLists();
+	TmdbAccount account = new TmdbApi(apikey).getAccount();
+	SessionToken st = new SessionToken("");
+	AccountID aid = new AccountID(6218283);
 	
 	ObjectMapper mapper = new ObjectMapper();
 
@@ -479,6 +484,111 @@ public class MovieService {
 						
 		HashMap<String, Object> hm = new HashMap<String, Object>();
 		hm.put(Constants.Pagination.DATA, mlist);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	//---------------------------------------------------------------------------------------------
+	// ACCOUNT SERVICES (5)
+	// 1) Get the basic information for an account.
+	@GET
+	@Path("/account")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getAccountInfo(@QueryParam("offset") int offset,
+		@QueryParam("count") int count) {
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, account.getAccount(st));
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	// 2) Get the lists that you have created and marked as a favorite
+	@GET
+	@Path("/account/lists")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getAccountLists(@QueryParam("offset") int offset,
+		@QueryParam("count") int count) {
+		
+		ArrayList<MovieList> mlist = new ArrayList<MovieList>();
+		MovieListResultsPage mlrp = account.getLists(st, aid, "en", 1);
+		mlist.addAll(mlrp.getResults());
+		
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put(Constants.Pagination.DATA, mlist);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	// 3) Get the list of rated movies (and associated rating) for an account
+	@GET
+	@Path("/account/rated/movies")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getAccountRatedMovies(@QueryParam("offset") int offset,
+		@QueryParam("count") int count) {
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		MovieResultsPage mrp = account.getRatedMovies(st, aid, 1);
+		hm.put(Constants.Pagination.DATA, mrp);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	// 4) Get the list of favorite movies for an account
+	@GET
+	@Path("/account/favorite/movies")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getFavoriteMovies(@QueryParam("offset") int offset,
+		@QueryParam("count") int count) {
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		MovieResultsPage mrp = account.getFavoriteMovies(st, aid);
+		hm.put(Constants.Pagination.DATA, mrp);
+		hm.put(Constants.Pagination.OFFSET, offset);
+		hm.put(Constants.Pagination.COUNT, count);
+		String movieString = null;
+		try {
+			movieString = mapper.writeValueAsString(hm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(movieString).build();
+	}
+	
+	// 5) Get the list of movies on an accounts watchlist
+	@GET
+	@Path("/account/watchlist/movies")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getWatchListMovies(@QueryParam("offset") int offset,
+		@QueryParam("count") int count) {
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		MovieResultsPage mrp = account.getWatchListMovies(st, aid, 1);
+		hm.put(Constants.Pagination.DATA, mrp);
 		hm.put(Constants.Pagination.OFFSET, offset);
 		hm.put(Constants.Pagination.COUNT, count);
 		String movieString = null;
