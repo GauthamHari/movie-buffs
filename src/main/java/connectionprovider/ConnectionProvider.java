@@ -9,15 +9,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class ConnectionProvider {
+	
+	//---------------------------------------------------------------------------------------------
 	public static Connection getConnection() throws URISyntaxException,
 			SQLException {
 		URI dbUri = new URI(System.getenv("DATABASE_URL"));
-
 		String username = dbUri.getUserInfo().split(":")[0];
 		String password = dbUri.getUserInfo().split(":")[1];
 		try {
 			Class.forName("org.postgresql.Driver");
-		} catch (ClassNotFoundException e) {
+		} 
+		catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		String dbUrl = "jdbc:postgresql://"
@@ -30,6 +32,7 @@ public class ConnectionProvider {
 		return DriverManager.getConnection(dbUrl, username, password);
 	}
 
+	//---------------------------------------------------------------------------------------------
 	public static void main(String[] args) {
 		try {
 			Connection connection = getConnection();
@@ -41,9 +44,11 @@ public class ConnectionProvider {
 				System.out.println("Secret: " + rs.getString("secret"));
 				System.out.println("Oauth: " + rs.getString("oauth"));
 			}
-		} catch (URISyntaxException e) {
+		} 
+		catch (URISyntaxException e) {
 			e.printStackTrace();
-		} catch (SQLException e) {
+		} 
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}

@@ -9,21 +9,20 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
-
 import commands.DB;
 
 @Path("/twitter")
 public class TwitterService {
-	String consumerKey = "NxVgu3I9yl4VOtllAZRwHHhXR";
-	String consumerSecret = "O7IHem6io5eb9guyJiSe9ZdEmITcWcqfu9f7BphVeHdTtzpgAM";
-
+	String consumerKey = "";
+	String consumerSecret = "";
+	
+	//---------------------------------------------------------------------------------------------
 	@GET
 	@Path("/request")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -32,22 +31,24 @@ public class TwitterService {
 		Twitter twitter = new TwitterFactory().getInstance();
 		try {
 			twitter.setOAuthConsumer(consumerKey, consumerSecret);
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 			System.out.println("The OAuthConsumer has likely already been set");
 		}
-
 		try {
 			RequestToken requestToken = twitter.getOAuthRequestToken();
 			
 			request.getSession().setAttribute("requestToken", requestToken);
 			request.getSession().setAttribute("username", user);
 			response.sendRedirect(requestToken.getAuthorizationURL());
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 		return "";
 	}
-
+	
+	//---------------------------------------------------------------------------------------------
 	@GET
 	@Path("/success")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -100,7 +101,8 @@ public class TwitterService {
 		else
 			return "BOO! didn't work";
 	}
-
+	
+	//---------------------------------------------------------------------------------------------
 	@GET
 	@Path("/status")
 	@Produces(MediaType.APPLICATION_JSON)
