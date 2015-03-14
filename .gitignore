@@ -148,3 +148,5 @@ local.properties
 /target
 /target
 /target
+
+test.properties
