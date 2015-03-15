@@ -22,7 +22,7 @@ import info.movito.themoviedbapi.model.people.*;
 
 @Path("/search")
 public class SearchService {
-	private static String apikey = "";
+	private static String apikey = "e688f51c2289b388729acfe277687a99";
 	ObjectMapper mapper = new ObjectMapper();
 	TmdbSearch search = new TmdbApi(apikey).getSearch();
 	
