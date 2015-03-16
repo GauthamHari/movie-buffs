@@ -17,7 +17,7 @@ import info.movito.themoviedbapi.model.core.MovieResultsPage;
 
 @Path("/genre")
 public class GenreService {
-	private static String apikey = "e688f51c2289b388729acfe277687a99";
+	private static String apikey = ""; // insert
 	TmdbGenre genre = new TmdbApi(apikey).getGenre();
 	ObjectMapper mapper = new ObjectMapper();
 	

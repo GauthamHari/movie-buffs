@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import twitter4j.auth.AccessToken;
 import connectionprovider.ConnectionProvider;
 
@@ -16,13 +17,12 @@ public class DB {
 		try {
 			Connection connection = ConnectionProvider.getConnection();
 			PreparedStatement stmt = connection
-					.prepareStatement("SELECT oauth, secret FROM TOKENS WHERE username = ? AND application=?");
+				.prepareStatement("SELECT oauth, secret FROM TOKENS WHERE username = ? AND application=?");
 			stmt.setString(1, user);
 			stmt.setString(2, application);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
-				accessToken = new AccessToken(rs.getString("oauth"),
-						rs.getString("secret"));
+				accessToken = new AccessToken(rs.getString("oauth"), rs.getString("secret"));
 			}
 		} 
 		catch (URISyntaxException e) {
@@ -35,12 +35,11 @@ public class DB {
 	}
 
 	//-----------------------------------------------------------------------------------------------------------------
-	public void saveOAuthToken(String otoken, String user, String app,
-			String secret) {
+	public void saveOAuthToken(String otoken, String user, String app, String secret) {
 		try {
 			Connection connection = ConnectionProvider.getConnection();
 			PreparedStatement stmt = connection
-					.prepareStatement("INSERT INTO TOKENS(oauth, username, application, secret) VALUES(?, ?, ?, ?)");
+				.prepareStatement("INSERT INTO TOKENS(oauth, username, application, secret) VALUES(?, ?, ?, ?)");
 			stmt.setString(1, otoken);
 			stmt.setString(2, user);
 			stmt.setString(3, app);
@@ -61,7 +60,7 @@ public class DB {
 		try {
 			Connection connection = ConnectionProvider.getConnection();
 			PreparedStatement stmt = connection
-					.prepareStatement("SELECT username FROM tokens");
+				.prepareStatement("SELECT username FROM tokens");
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				usernames.add(rs.getString("username"));
@@ -74,5 +73,24 @@ public class DB {
 			e.printStackTrace();
 		}
 		return usernames; 
+	}
+
+	//-----------------------------------------------------------------------------------------------------------------
+	public void saveSessionId(String username, String application, String sessionId) {
+		try {
+			Connection connection = ConnectionProvider.getConnection();
+			PreparedStatement stmt = connection
+				.prepareStatement("INSERT INTO MOVIEDB(username, application, secret) VALUES(?, ?, ?)");
+			stmt.setString(1, username);
+			stmt.setString(2, application);
+			stmt.setString(3, sessionId);
+			stmt.executeUpdate();
+		} 
+		catch (URISyntaxException e) {
+			e.printStackTrace();
+		} 
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

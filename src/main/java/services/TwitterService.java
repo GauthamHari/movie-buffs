@@ -19,8 +19,8 @@ import commands.DB;
 
 @Path("/twitter")
 public class TwitterService {
-	String consumerKey = "NxVgu3I9yl4VOtllAZRwHHhXR";
-	String consumerSecret = "O7IHem6io5eb9guyJiSe9ZdEmITcWcqfu9f7BphVeHdTtzpgAM";
+	String consumerKey = "";    // insert
+	String consumerSecret = ""; // insert
 	
 	//---------------------------------------------------------------------------------------------
 	@GET
@@ -37,7 +37,6 @@ public class TwitterService {
 		}
 		try {
 			RequestToken requestToken = twitter.getOAuthRequestToken();
-			
 			request.getSession().setAttribute("requestToken", requestToken);
 			request.getSession().setAttribute("username", user);
 			response.sendRedirect(requestToken.getAuthorizationURL());
@@ -63,8 +62,7 @@ public class TwitterService {
 		try {
 			twitter.setOAuthConsumer(consumerKey, consumerSecret);
 		} catch (Exception e) {
-			System.out
-					.println("The OAuthConsumer has likely already been set, ignore");
+			System.out.println("The OAuthConsumer has likely already been set, ignore");
 		}
 		try {
 			requestToken = (RequestToken) request.getSession().getAttribute(

@@ -1,46 +1,32 @@
 package services;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import util.Constants;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import info.movito.themoviedbapi.*;
-import info.movito.themoviedbapi.TmdbAccount.MovieListResultsPage;
-import info.movito.themoviedbapi.TmdbPeople.PersonResultsPage;
-import info.movito.themoviedbapi.TmdbSearch.KeywordResultsPage;
-import info.movito.themoviedbapi.model.*;
-import info.movito.themoviedbapi.model.core.MovieResultsPage;
-import info.movito.themoviedbapi.model.keywords.Keyword;
-import info.movito.themoviedbapi.model.people.*;
 
-@Path("/search")
-public class SearchService {
-	private static String apikey = ""; // insert
+@Path("/people")
+public class PeopleService {
+	private static String apikey = ""; // insert	
+	TmdbPeople people = new TmdbApi(apikey).getPeople();
 	ObjectMapper mapper = new ObjectMapper();
-	TmdbSearch search = new TmdbApi(apikey).getSearch();
 	
 	//---------------------------------------------------------------------------------------------
-	//SEARCH SERVICES (4)
-	// 1) Search for movies by title
+	// PEOPLE SERVICES (4)
+	// 1) Get the general person information for a specific id. 
 	@GET
-	@Path("/movie/{title}")
+	@Path("/person")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response SearchMovieByTitle(@QueryParam("offset") int offset,
-		@QueryParam("count") int count, @PathParam("title") String title) {
-					
-		ArrayList<MovieDb> mdb = new ArrayList<MovieDb>();
-		MovieResultsPage mrp = search.searchMovie(title, null, "en", true, 1);
-		mdb.addAll(mrp.getResults());	
-							
+	public Response getPersonId(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @QueryParam("personid") int personid) {
 		HashMap<String, Object> hm = new HashMap<String, Object>();
-		hm.put(Constants.Pagination.DATA, mdb);
+		hm.put(Constants.Pagination.DATA, people.getPersonInfo(personid, "."));
 		hm.put(Constants.Pagination.OFFSET, offset);
 		hm.put(Constants.Pagination.COUNT, count);
 		String movieString = null;
@@ -53,19 +39,14 @@ public class SearchService {
 	}
 	
 	//---------------------------------------------------------------------------------------------
-	// 2) Search for people by name
+	// 2) Get the credits for a specific person id. 
 	@GET
-	@Path("/person/{name}")
+	@Path("/credits")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response SearchPeopleByName(@QueryParam("offset") int offset,
-		@QueryParam("count") int count, @PathParam("name") String name) {
-					
-		ArrayList<Person> p = new ArrayList<Person>();
-		PersonResultsPage prp = search.searchPerson(name, true, null);
-		p.addAll(prp.getResults());	
-							
+	public Response getPersonCredits(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @QueryParam("personid") int personid) {
 		HashMap<String, Object> hm = new HashMap<String, Object>();
-		hm.put(Constants.Pagination.DATA, p);
+		hm.put(Constants.Pagination.DATA, people.getPersonCredits(personid));
 		hm.put(Constants.Pagination.OFFSET, offset);
 		hm.put(Constants.Pagination.COUNT, count);
 		String movieString = null;
@@ -78,19 +59,14 @@ public class SearchService {
 	}
 	
 	//---------------------------------------------------------------------------------------------
-	// 3) Search for keywords by name
+	// 3) Get the images for a specific person id. 
 	@GET
-	@Path("/keyword/{name}")
+	@Path("/images")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response SearchKeywordsByName(@QueryParam("offset") int offset,
-		@QueryParam("count") int count, @PathParam("name") String name) {
-					
-		ArrayList<Keyword> k = new ArrayList<Keyword>();
-		KeywordResultsPage krp = search.searchKeyword(name, 1);
-		k.addAll(krp.getResults());	
-						
+	public Response getPersonImages(@QueryParam("offset") int offset,
+		@QueryParam("count") int count, @QueryParam("personid") int personid) {
 		HashMap<String, Object> hm = new HashMap<String, Object>();
-		hm.put(Constants.Pagination.DATA, k);
+		hm.put(Constants.Pagination.DATA, people.getPersonImages(personid));
 		hm.put(Constants.Pagination.OFFSET, offset);
 		hm.put(Constants.Pagination.COUNT, count);
 		String movieString = null;
@@ -101,21 +77,15 @@ public class SearchService {
 		}
 		return Response.status(200).entity(movieString).build();
 	}
-		
+	
 	//---------------------------------------------------------------------------------------------
-	// 4) Search for lists by name and description
+	// 4) Get the list of popular people on The Movie Database. 
 	@GET
-	@Path("/list/{name}")
+	@Path("/popular")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response SearchListsByName(@QueryParam("offset") int offset,
-		@QueryParam("count") int count, @PathParam("name") String name) {
-					
-		ArrayList<MovieList> mlist = new ArrayList<MovieList>();
-		MovieListResultsPage mlrp = search.searchList(name, "en", 1);
-		mlist.addAll(mlrp.getResults());	
-							
+	public Response getPersonPopular(@QueryParam("offset") int offset, @QueryParam("count") int count) {
 		HashMap<String, Object> hm = new HashMap<String, Object>();
-		hm.put(Constants.Pagination.DATA, mlist);
+		hm.put(Constants.Pagination.DATA, people.getPersonPopular(1));
 		hm.put(Constants.Pagination.OFFSET, offset);
 		hm.put(Constants.Pagination.COUNT, count);
 		String movieString = null;
