@@ -17,7 +17,7 @@ import info.movito.themoviedbapi.model.config.TokenSession;
 
 @Path("/tmdb")
 public class TestService {
-	private static String apikey = ""; // insert
+	private static String apikey = "e688f51c2289b388729acfe277687a99"; // insert
 	TmdbAuthentication authentication = new TmdbApi(apikey).getAuthentication();
 	ObjectMapper mapper = new ObjectMapper();
 	

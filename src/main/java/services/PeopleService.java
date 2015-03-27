@@ -13,7 +13,7 @@ import info.movito.themoviedbapi.*;
 
 @Path("/people")
 public class PeopleService {
-	private static String apikey = ""; // insert	
+	private static String apikey = "e688f51c2289b388729acfe277687a99"; // insert	
 	TmdbPeople people = new TmdbApi(apikey).getPeople();
 	ObjectMapper mapper = new ObjectMapper();
 	

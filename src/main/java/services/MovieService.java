@@ -18,7 +18,7 @@ import info.movito.themoviedbapi.model.keywords.Keyword;
 
 @Path("/movies")
 public class MovieService {
-	private static String apikey = ""; // insert	
+	private static String apikey = "e688f51c2289b388729acfe277687a99"; // insert	
 	TmdbMovies movies = new TmdbApi(apikey).getMovies();
 	ObjectMapper mapper = new ObjectMapper();
 
