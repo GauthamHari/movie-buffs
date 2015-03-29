@@ -23,7 +23,7 @@ public class AccountService {
 	private static String apikey = "e688f51c2289b388729acfe277687a99"; 						// insert
 	TmdbAccount account = new TmdbApi(apikey).getAccount();
 	SessionToken st = new SessionToken("4ae3f333c6e2c5d6dfab711b2a38b3d18a9487e"); 				// insert
-	AccountID aid = new AccountID(1); 						// insert
+	AccountID aid = new AccountID(6218283); 						// insert
 	ObjectMapper mapper = new ObjectMapper();
 	info.movito.themoviedbapi.TmdbAccount.MediaType m = info.movito.themoviedbapi.TmdbAccount.MediaType.valueOf("MOVIE");
 	

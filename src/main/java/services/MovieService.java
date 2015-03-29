@@ -2,7 +2,9 @@ package services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import util.Constants;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -10,7 +12,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import info.movito.themoviedbapi.*;
 import info.movito.themoviedbapi.model.*;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
@@ -335,5 +339,27 @@ public class MovieService {
 			e.printStackTrace();
 		}
 		return Response.status(200).entity(movieString).build();
+	}
+	
+	//---------------------------------------------------------------------------------------------
+	// 14) Get a list of forthcoming movies
+	@GET
+	@Path("/getmoviesforthcoming")
+	@Produces({ MediaType.TEXT_PLAIN })
+	public Response getForthcomingMovies(@QueryParam("offset") int offset,
+		@QueryParam("count") int count) {
+		
+		int numberOfItems = 0;
+		StringBuilder sb = new StringBuilder("UPCOMING MOVIES AND THEIR RELEASE DATES (YYYY-MM-DD): ");
+		sb.append(System.lineSeparator());
+		ArrayList<MovieDb> mdb = new ArrayList<MovieDb>();
+		MovieResultsPage mrp = movies.getUpcoming("en", 1);
+		mdb.addAll(mrp.getResults());
+		
+		for(MovieDb item: mdb) {
+			sb.append(System.lineSeparator());
+			sb.append((++numberOfItems) + ") " + item.getOriginalTitle() + " - " + item.getReleaseDate());
+		}
+		return Response.status(200).entity(sb.toString()).build();
 	}
 }
