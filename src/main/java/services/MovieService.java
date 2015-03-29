@@ -343,11 +343,7 @@ public class MovieService {
 	
 	//---------------------------------------------------------------------------------------------
 	// 14) Get a list of forthcoming movies
-	@GET
-	@Path("/getmoviesforthcoming")
-	@Produces({ MediaType.TEXT_PLAIN })
-	public Response getForthcomingMovies(@QueryParam("offset") int offset,
-		@QueryParam("count") int count) {
+	public String getForthcomingMovies() {
 		
 		int numberOfItems = 0;
 		StringBuilder sb = new StringBuilder("UPCOMING MOVIES AND THEIR RELEASE DATES (YYYY-MM-DD): ");
@@ -356,10 +352,15 @@ public class MovieService {
 		MovieResultsPage mrp = movies.getUpcoming("en", 1);
 		mdb.addAll(mrp.getResults());
 		
-		for(MovieDb item: mdb) {
+		/*for(MovieDb item: mdb) {
 			sb.append(System.lineSeparator());
 			sb.append((++numberOfItems) + ") " + item.getOriginalTitle() + " - " + item.getReleaseDate());
+		}*/
+		
+		for(int i=0; i<2; i++) {
+			sb.append(System.lineSeparator());
+			sb.append( (i+1) + ") " + mdb.get(i).getOriginalTitle() + " - " + mdb.get(i).getReleaseDate());
 		}
-		return Response.status(200).entity(sb.toString()).build();
+		return sb.toString();
 	}
 }

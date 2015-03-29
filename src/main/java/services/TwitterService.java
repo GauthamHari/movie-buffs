@@ -133,10 +133,12 @@ public class TwitterService {
 			return "BOO! didn't work";
 	}
 	
-	/*@GET
+	//---------------------------------------------------------------------------------------------
+	@GET
 	@Path("/post")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String postGroupMessage() {
+		MovieService ms = new MovieService();
 		Twitter twitter = new TwitterFactory().getInstance();
 		Status tweetStatus = null;
 		AccessToken accessToken = null;
@@ -159,8 +161,8 @@ public class TwitterService {
 			accessToken = db.getOAuthToken(user, "twitter");
 			twitter.setOAuthAccessToken(accessToken); 
 			try {
-				tweetStatus = twitter.updateStatus("Group message from Gautham Hari's Heroku app 'twitterloop' "
-					+ System.currentTimeMillis());
+				tweetStatus = twitter.updateStatus(ms.getForthcomingMovies()
+					+ "\n" + System.currentTimeMillis());
 			} catch (TwitterException e) {
 				e.printStackTrace();
 			}
@@ -169,5 +171,5 @@ public class TwitterService {
 			return "The group message has been posted to all twitter accounts";
 		else
 			return "BOO! didn't work";
-	}*/
+	}
 }
