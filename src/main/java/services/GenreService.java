@@ -17,18 +17,17 @@ import info.movito.themoviedbapi.model.core.MovieResultsPage;
 
 @Path("/genre")
 public class GenreService {
-	private static String apikey = "e688f51c2289b388729acfe277687a99"; // insert
+	private static String apikey = "e688f51c2289b388729acfe277687a99"; 
 	TmdbGenre genre = new TmdbApi(apikey).getGenre();
 	ObjectMapper mapper = new ObjectMapper();
 	
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// GENRE SERVICES (2)
 	// 1) Browse all genres
 	@GET
 	@Path("/getgenrelist")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response browseGenres(@QueryParam("offset") int offset,
-		@QueryParam("count") int count) {
+	public Response browseGenres(@QueryParam("offset") int offset, @QueryParam("count") int count) {
 			
 		ArrayList<Genre> glist = new ArrayList<Genre>();
 		glist.addAll(genre.getGenreList("en"));
@@ -46,13 +45,13 @@ public class GenreService {
 		return Response.status(200).entity(movieString).build();
 	}
 		
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// 2) Browse all movies in a particular genre
 	@GET
 	@Path("/getgenremovies/{genreid}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response browseMoviesInGenre(@QueryParam("offset") int offset,
-		@QueryParam("count") int count, @PathParam("genreid") int genreid) {
+	public Response browseMoviesInGenre(@QueryParam("offset") int offset, @QueryParam("count") int count, 
+			@PathParam("genreid") int genreid) {
 			
 		ArrayList<MovieDb> mdb = new ArrayList<MovieDb>();
 		MovieResultsPage mg = genre.getGenreMovies(genreid, "en", 1, true);

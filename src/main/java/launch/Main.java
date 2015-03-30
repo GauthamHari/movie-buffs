@@ -1,7 +1,6 @@
 package launch;
 
 import java.io.File;
-
 import org.apache.catalina.startup.Tomcat;
 
 public class Main {

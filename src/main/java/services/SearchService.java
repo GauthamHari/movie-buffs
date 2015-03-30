@@ -22,18 +22,18 @@ import info.movito.themoviedbapi.model.people.*;
 
 @Path("/search")
 public class SearchService {
-	private static String apikey = "e688f51c2289b388729acfe277687a99"; // insert
+	private static String apikey = "e688f51c2289b388729acfe277687a99"; 
 	ObjectMapper mapper = new ObjectMapper();
 	TmdbSearch search = new TmdbApi(apikey).getSearch();
 	
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	//SEARCH SERVICES (4)
 	// 1) Search for movies by title
 	@GET
 	@Path("/movie/{title}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response SearchMovieByTitle(@QueryParam("offset") int offset,
-		@QueryParam("count") int count, @PathParam("title") String title) {
+	public Response SearchMovieByTitle(@QueryParam("offset") int offset, @QueryParam("count") int count, 
+			@PathParam("title") String title) {
 					
 		ArrayList<MovieDb> mdb = new ArrayList<MovieDb>();
 		MovieResultsPage mrp = search.searchMovie(title, null, "en", true, 1);
@@ -52,13 +52,13 @@ public class SearchService {
 		return Response.status(200).entity(movieString).build();
 	}
 	
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// 2) Search for people by name
 	@GET
 	@Path("/person/{name}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response SearchPeopleByName(@QueryParam("offset") int offset,
-		@QueryParam("count") int count, @PathParam("name") String name) {
+	public Response SearchPeopleByName(@QueryParam("offset") int offset, @QueryParam("count") int count, 
+			@PathParam("name") String name) {
 					
 		ArrayList<Person> p = new ArrayList<Person>();
 		PersonResultsPage prp = search.searchPerson(name, true, null);
@@ -77,13 +77,13 @@ public class SearchService {
 		return Response.status(200).entity(movieString).build();
 	}
 	
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// 3) Search for keywords by name
 	@GET
 	@Path("/keyword/{name}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response SearchKeywordsByName(@QueryParam("offset") int offset,
-		@QueryParam("count") int count, @PathParam("name") String name) {
+	public Response SearchKeywordsByName(@QueryParam("offset") int offset, @QueryParam("count") int count, 
+			@PathParam("name") String name) {
 					
 		ArrayList<Keyword> k = new ArrayList<Keyword>();
 		KeywordResultsPage krp = search.searchKeyword(name, 1);
@@ -102,13 +102,13 @@ public class SearchService {
 		return Response.status(200).entity(movieString).build();
 	}
 		
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// 4) Search for lists by name and description
 	@GET
 	@Path("/list/{name}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response SearchListsByName(@QueryParam("offset") int offset,
-		@QueryParam("count") int count, @PathParam("name") String name) {
+	public Response SearchListsByName(@QueryParam("offset") int offset, @QueryParam("count") int count, 
+			@PathParam("name") String name) {
 					
 		ArrayList<MovieList> mlist = new ArrayList<MovieList>();
 		MovieListResultsPage mlrp = search.searchList(name, "en", 1);

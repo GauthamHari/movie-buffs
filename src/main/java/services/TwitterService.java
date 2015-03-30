@@ -19,20 +19,19 @@ import commands.DB;
 
 @Path("/twitter")
 public class TwitterService {
-	String consumerKey = "NxVgu3I9yl4VOtllAZRwHHhXR";    // insert
-	String consumerSecret = "O7IHem6io5eb9guyJiSe9ZdEmITcWcqfu9f7BphVeHdTtzpgAM"; // insert
+	String consumerKey = "NxVgu3I9yl4VOtllAZRwHHhXR";    
+	String consumerSecret = "O7IHem6io5eb9guyJiSe9ZdEmITcWcqfu9f7BphVeHdTtzpgAM"; 
 	
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	@GET
 	@Path("/request")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getAuthentication(@Context HttpServletResponse response,
-			@Context HttpServletRequest request, @QueryParam("user") String user) {
+	public String getAuthentication(@Context HttpServletResponse response, @Context HttpServletRequest request, 
+			@QueryParam("user") String user) {
 		Twitter twitter = new TwitterFactory().getInstance();
 		try {
 			twitter.setOAuthConsumer(consumerKey, consumerSecret);
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("The OAuthConsumer has likely already been set");
 		}
 		try {
@@ -40,19 +39,17 @@ public class TwitterService {
 			request.getSession().setAttribute("requestToken", requestToken);
 			request.getSession().setAttribute("username", user);
 			response.sendRedirect(requestToken.getAuthorizationURL());
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return "";
 	}
 	
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	@GET
 	@Path("/success")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String success(@QueryParam("oauth_token") String otoken,
-			@QueryParam("oauth_verifier") String oauth_verifier,
+	public String success(@QueryParam("oauth_token") String otoken, @QueryParam("oauth_verifier") String oauth_verifier,
 			@Context HttpServletRequest request) {
 		Twitter twitter = new TwitterFactory().getInstance();
 		Status tweetStatus = null;
@@ -100,7 +97,7 @@ public class TwitterService {
 			return "BOO! didn't work";
 	}
 	
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	@GET
 	@Path("/status")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -133,7 +130,7 @@ public class TwitterService {
 			return "BOO! didn't work";
 	}
 	
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	@GET
 	@Path("/post")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -151,8 +148,7 @@ public class TwitterService {
 		try {
 			DB db = new DB();
 			temp = db.getUsernames();
-		}
-		catch (Exception e1) {
+		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 		for (String user : temp)

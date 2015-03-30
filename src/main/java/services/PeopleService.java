@@ -13,18 +13,18 @@ import info.movito.themoviedbapi.*;
 
 @Path("/people")
 public class PeopleService {
-	private static String apikey = "e688f51c2289b388729acfe277687a99"; // insert	
+	private static String apikey = "e688f51c2289b388729acfe277687a99"; 	
 	TmdbPeople people = new TmdbApi(apikey).getPeople();
 	ObjectMapper mapper = new ObjectMapper();
 	
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// PEOPLE SERVICES (4)
 	// 1) Get the general person information for a specific id. 
 	@GET
 	@Path("/person")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getPersonId(@QueryParam("offset") int offset,
-		@QueryParam("count") int count, @QueryParam("personid") int personid) {
+	public Response getPersonId(@QueryParam("offset") int offset, @QueryParam("count") int count, 
+			@QueryParam("personid") int personid) {
 		HashMap<String, Object> hm = new HashMap<String, Object>();
 		hm.put(Constants.Pagination.DATA, people.getPersonInfo(personid, "."));
 		hm.put(Constants.Pagination.OFFSET, offset);
@@ -38,13 +38,13 @@ public class PeopleService {
 		return Response.status(200).entity(movieString).build();
 	}
 	
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// 2) Get the credits for a specific person id. 
 	@GET
 	@Path("/credits")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getPersonCredits(@QueryParam("offset") int offset,
-		@QueryParam("count") int count, @QueryParam("personid") int personid) {
+	public Response getPersonCredits(@QueryParam("offset") int offset, @QueryParam("count") int count, 
+			@QueryParam("personid") int personid) {
 		HashMap<String, Object> hm = new HashMap<String, Object>();
 		hm.put(Constants.Pagination.DATA, people.getPersonCredits(personid));
 		hm.put(Constants.Pagination.OFFSET, offset);
@@ -58,13 +58,13 @@ public class PeopleService {
 		return Response.status(200).entity(movieString).build();
 	}
 	
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// 3) Get the images for a specific person id. 
 	@GET
 	@Path("/images")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getPersonImages(@QueryParam("offset") int offset,
-		@QueryParam("count") int count, @QueryParam("personid") int personid) {
+	public Response getPersonImages(@QueryParam("offset") int offset, @QueryParam("count") int count, 
+			@QueryParam("personid") int personid) {
 		HashMap<String, Object> hm = new HashMap<String, Object>();
 		hm.put(Constants.Pagination.DATA, people.getPersonImages(personid));
 		hm.put(Constants.Pagination.OFFSET, offset);
@@ -78,7 +78,7 @@ public class PeopleService {
 		return Response.status(200).entity(movieString).build();
 	}
 	
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// 4) Get the list of popular people on The Movie Database. 
 	@GET
 	@Path("/popular")

@@ -10,18 +10,19 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import info.movito.themoviedbapi.*;
 import info.movito.themoviedbapi.model.core.SessionToken;
 
 @Path("/list")
 public class ListService {
-	private static String apikey = "e688f51c2289b388729acfe277687a99";		// insert
-	SessionToken st = new SessionToken("4ae3f333c6e2c5d6dfab711b2a38b3d18a9487e"); // insert
+	private static String apikey = "e688f51c2289b388729acfe277687a99";	
+	SessionToken st = new SessionToken(User.getSessionid()); 
 	TmdbLists list = new TmdbApi(apikey).getLists();
 	ObjectMapper mapper = new ObjectMapper();
 	 
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// LIST SERVICES (5)
 	// 1) This method lets users create a new list.
 	@Path("/create")
@@ -42,7 +43,7 @@ public class ListService {
 		return Response.status(200).entity(movieString).build();
 	}
 	
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// 2) This method lets users delete an existing list. 
 	@Path("/delete")
 	@DELETE
@@ -62,7 +63,7 @@ public class ListService {
 		return Response.status(200).entity(movieString).build();
 	}
 	
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// 3) This method lets users add new movies to a list that they created. 
 	@Path("/add")
 	@POST
@@ -82,7 +83,7 @@ public class ListService {
 		return Response.status(200).entity(movieString).build();
 	}
 	
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// 4) This method lets users delete movies from a list that they created. 
 	@Path("/remove")
 	@POST
@@ -102,7 +103,7 @@ public class ListService {
 		return Response.status(200).entity(movieString).build();
 	}
 	
-	//---------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// 5) Check to see if a movie ID is already added to a list.
 	@Path("/status")
 	@GET
