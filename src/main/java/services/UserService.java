@@ -80,7 +80,7 @@ public class UserService {
 		DB db = new DB();
 		try {
 			response.sendRedirect("http://api.themoviedb.org/3/authentication/session/new?api_key=" 
-				+ apikey + "&request_token=" + db.getTmdbRequestToken(username));
+				+ apikey + "&request_token=" + db.getTmdbRequestToken(username));			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -108,6 +108,20 @@ public class UserService {
 		DB db = new DB();
 		try {
 			db.removeUser(username);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity("").build();
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	@GET
+	@Path("/logout")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response logout() {
+		DB db = new DB();
+		try {
+			db.logout();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

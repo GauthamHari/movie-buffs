@@ -338,7 +338,7 @@ public class MovieService {
 	@GET
 	@Path("/getmoviesforthcoming")
 	@Produces({ MediaType.TEXT_PLAIN })
-	public Response getForthcomingMovies() {
+	public Response getForthcomingMovies() {		
 		
 		int numberOfItems = 0;
 		StringBuilder sb = new StringBuilder("UPCOMING MOVIES AND THEIR RELEASE DATES (YYYY-MM-DD): ");
