@@ -16,7 +16,7 @@ import commands.DB;
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbAuthentication;
 
-@Path("/tmdb")
+@Path("/user")
 public class UserService {
 	private static String apikey = "e688f51c2289b388729acfe277687a99";
 	TmdbAuthentication authentication = new TmdbApi(apikey).getAuthentication();
