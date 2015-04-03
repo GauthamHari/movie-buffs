@@ -1,21 +1,41 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title> Movie-Buffs </title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script src="http://code.jquery.com/jquery-latest.min.js">	</script>
 <link href="main.css" rel="stylesheet" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script>
+base_url="http://localhost:8082/twitterloop/rest/user/login";
+$(document).ready(function() {
+	$("#login").on('click', function() {
+		if(!username.value) { 
+			alert("Please enter your Email Id"); 
+		}
+		else if(!password.value) { 
+			alert("Please enter your Password"); 
+		}
+		else { 
+			base_url = base_url + "?username=" + username.value + "&password=" + password.value; 
+			$.get(base_url, function(data, status) {  	
+				alert("Login Successful");
+			   	window.location.href='http://localhost:8082/twitterloop/login.html';
+			});
+		}
+		base_url="http://localhost:8082/twitterloop/rest/user/login";		
+	});
+});
+</script>
 </head>
 <body>
 <div style="background-color: Black; padding-bottom: 5px; padding-left: 500px; padding-right: 500px; padding-top: 5px;">
 	<center> <h1> <font color="Gold"> MOVIE-BUFFS </font> </h1> </center>
-	<a href="about.html"> <input type="submit" value="About" title="About" style="width: 75px; height: 25px" /> </a>
-	<a href="register.html"> <input type="submit" value="Register" title="Register" style="width: 75px; height: 25px" /> </a>
-	<font color="Gold"> Username: </font>
-	<input type="text" id="username" name="username">
-	<font color="Gold"> Password: </font>
-	<input type="password" id="password" name="password">
-	<input type="submit" value="Login" onclick="login.html">
-	<a href="login.html"> <input type="submit" value="Login" title="Login" style="width: 75px; height: 25px" /> </a>
+	<a href="about.html"> <input type="button" value="About" title="About" style="width: 75px; height: 25px" /> </a>
+	<a href="register.html"> <input type="button" value="Register" title="Register" style="width: 75px; height: 25px" /> </a>
+	<font color="Gold"> Email Id: </font>	
+	<input type="text" id=username>
+	<font color="Gold"> Password: </font>	
+	<input type="password" id=password>
+	<input type="button" id=login value="Login">
 </div>
 </body>
 </html> 

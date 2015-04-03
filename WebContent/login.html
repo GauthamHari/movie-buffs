@@ -1,10 +1,65 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title> Movie-Buffs </title>
+<script src="http://code.jquery.com/jquery-latest.min.js">	</script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link href="about.css" rel="stylesheet" />
+<script>
+base_url="http://localhost:8082/twitterloop/rest/user/saveaccesstoken";
+$(document).ready(function() {
+	$("#submit").on('click', function() {  
+		alert("Clicked on Save Access Token button.");
+		base_url = base_url + "?sessionid=" + accesstoken.value;
+		postData();
+	});
+	function postData(){
+        $.ajax({
+                type: "POST",
+                url: base_url,
+                success: function (data, status, jqXHR) {
+                    alert("Access Token saved successfully.");
+                },
+                error: function (jqXHR, status) {
+                    console.log(status);
+                    alert('Failed to save access token.');
+                    base_url="http://localhost:8082/twitterloop/rest/user/saveaccesstoken";
+                }
+             });
+       }
+	$("#logout").on('click', function() {  
+		$.get("http://localhost:8082/twitterloop/rest/user/logout", function(data, status) {  	
+			alert("Logout Successful");
+			window.location.href='http://localhost:8082/twitterloop/index.html';
+		});		
+	});
+	$("#deregister").on('click', function() {  
+		deleteData();
+		return false;	
+	});
+	function deleteData(){
+        $.ajax({
+                type: "DELETE",
+                url: "http://localhost:8082/twitterloop/rest/user/deregister",
+                success: function (data, status, jqXHR) {
+                    alert("Deletion successful");
+            		window.location.href='http://localhost:8082/twitterloop/index.html';
+                },
+                error: function (jqXHR, status) {
+                    console.log(status);
+                    alert('Deletion failed.');
+                }
+             });
+       }
+});
+</script>
 </head>
 <body>
+<center> <font color="Gold"> New Contents of login.html </font> </center>
+<center> <font color="Gold"> Tmdb Access Token: </font>
+<input type="text" id=accesstoken>
+<input type="button" id=submit value="Save Access Token">
+ <input type="button" id=logout value="Logout" width="1000" height=1000> 
+ <input type="button" id=deregister value="Delete Account" width="1000" height=1000>
+</center>
 </body>
 </html>

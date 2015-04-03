@@ -18,7 +18,7 @@ import info.movito.themoviedbapi.model.core.SessionToken;
 @Path("/list")
 public class ListService {
 	private static String apikey = "e688f51c2289b388729acfe277687a99";	
-	SessionToken st = new SessionToken(User.getSessionid()); 
+	SessionToken st = new SessionToken(User.getTmdbsessionid()); 
 	TmdbLists list = new TmdbApi(apikey).getLists();
 	ObjectMapper mapper = new ObjectMapper();
 	 

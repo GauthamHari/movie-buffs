@@ -1,7 +1,7 @@
 @CHARSET "UTF-8";
 body {
 	background : #666;
-	background-image: url(moviescollage.jpg);
+	background-image: url(images/moviescollage.jpg);
 	-webkit-background-size: cover;
   	-moz-background-size: cover;
   	-o-background-size: cover;

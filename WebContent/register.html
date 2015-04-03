@@ -1,11 +1,94 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title> Movie-Buffs </title>
+<script src="http://code.jquery.com/jquery-latest.min.js">	</script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link href="about.css" rel="stylesheet" />
+<script>
+base_url="http://localhost:8082/twitterloop/rest/user/register";
+
+$(document).ready(function(){
+    $('#register_form').submit(function(){
+    	if(!firstname.value)
+			alert("Please enter your First Name"); 
+		else if(!lastname.value) 
+			alert("Please enter your Last Name"); 
+		else if(!emailid.value) 
+			alert("Please enter your Email Id"); 
+		else if(!password.value)
+			alert("Please enter your Password"); 
+		else if ($('input[name=gender]:checked').length <= 0) {
+			alert("Please enter your Gender");
+		}
+		else {
+			base_url = base_url + "?username=" + emailid.value + "&password=" + password.value + 
+			"&firstname=" + firstname.value + "&lastname=" + lastname.value + "&gender=" + $("input[name=gender]:checked").val();
+			postData();
+		}
+    	return false;
+    });
+    function postData(){
+        $.ajax({
+                type: "POST",
+                url: base_url,
+                success: function (data, status, jqXHR) {
+                    alert("Registration successful.");
+                    window.location.href='http://localhost:8082/twitterloop/login.html';
+                },
+                error: function (jqXHR, status) {
+                    console.log(status);
+                    alert('Registration failed. Email Id is not available.');
+                    base_url="http://localhost:8082/twitterloop/rest/user/register";
+                }
+             });
+       }
+});
+</script>
 </head>
 <body>
-
+<form id="register_form">
+<br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
+<center> <font color="Gold" size="20"> Sign Up </font> </center>
+<center> <font color="Gold" size="4"> It’s free and always will be. </font> </center>
+	
+<center> <table>
+<tr> <td colspan="5"> &nbsp; </td> </tr>
+<tr>
+<td> <font color="Gold"> First Name: </font> </td>	
+<td> <input type="text" id=firstname> </td>
+</tr>
+<tr> <td colspan="5"> &nbsp; </td> </tr>
+<tr>
+<td> <font color="Gold"> Last Name: </font>	</td>
+<td> <input type="text" id=lastname> </td>
+</tr>
+<tr> <td colspan="5"> &nbsp; </td> </tr>
+<tr>
+<td> <font color="Gold"> Email Id: </font></td>
+<td> <input type="text" id=emailid> </td>
+</tr>
+<tr> <td colspan="5"> &nbsp; </td> </tr>
+<tr>
+<td> <font color="Gold"> Password: </font> </td>	
+<td> <input type="password" id=password> </td>
+</tr>
+<tr> <td colspan="5"> &nbsp; </td> </tr>
+<tr>
+<td> </td>
+<td> <input type="radio" name="gender" id=male value="Female"> <font color="Gold"> Female </font> 
+	 <input type="radio" name="gender" id=female value="Male"> <font color="Gold"> Male </font> </td>
+</tr>
+<tr> <td colspan="5"> &nbsp; </td> </tr>
+</table> </center>
+	
+<center> 
+<table> 
+<tr> 
+<td> </td>
+<td> <input type="Submit" id="signup" value="Sign Up" width="300" height="300"> </td> 
+</tr>
+</table> 
+</center>
+</form>
 </body>
 </html>

@@ -23,7 +23,7 @@ import info.movito.themoviedbapi.model.core.SessionToken;
 public class AccountService {
 	private static String apikey = "e688f51c2289b388729acfe277687a99"; 
 	TmdbAccount account = new TmdbApi(apikey).getAccount();
-	SessionToken st = new SessionToken(User.getSessionid()); 			
+	SessionToken st = new SessionToken(User.getTmdbsessionid()); 			
 	AccountID aid = new AccountID(account.getAccount(st).getId()); 
 	ObjectMapper mapper = new ObjectMapper();
 	info.movito.themoviedbapi.TmdbAccount.MediaType m = info.movito.themoviedbapi.TmdbAccount.MediaType.valueOf("MOVIE");

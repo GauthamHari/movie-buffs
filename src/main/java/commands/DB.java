@@ -69,8 +69,8 @@ public class DB {
 	}
 
 	//-----------------------------------------------------------------------------------------------------------------
-	public String addUser(String uname, String pwd, String fname, String lname, String gender) {
-		String result = null;
+	public boolean addUser(String uname, String pwd, String fname, String lname, String gender) {
+		boolean result = false;
 		if(isUsernameAvailable(uname)) {
 			try {
 				Connection connection = ConnectionProvider.getConnection();
@@ -82,24 +82,22 @@ public class DB {
 				stmt.setString(4, lname);
 				stmt.setString(5, gender);
 				stmt.executeUpdate();
-				result = "Registration successful.";
+				result = true;
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		}
-		else 
-			result = "Username is not available."; 
+		} 
 		return result;
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
-	public void removeUser(String username) {
+	public void removeUser() {
 		try {
 			Connection connection = ConnectionProvider.getConnection();
 			PreparedStatement stmt = connection.prepareStatement("DELETE FROM users WHERE username=?");
-			stmt.setString(1, username);
+			stmt.setString(1, User.getUsername());
 			stmt.execute();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
@@ -109,8 +107,8 @@ public class DB {
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
-	public String login(String username, String password) {
-		String result = null;
+	public boolean login(String username, String password) {
+		boolean result = false;
 		try {
 			Connection connection = ConnectionProvider.getConnection();
 			PreparedStatement stmt = connection
@@ -119,22 +117,24 @@ public class DB {
 			stmt.setString(2, password);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				result = rs.getString("tmdbsessionid");
-				User.setSessionid(result);
+				result = true;
+				User.setFirstname(rs.getString("firstname"));
+				User.setLastname(rs.getString("lastname"));
+				User.setUsername(rs.getString("username"));
+				User.setPassword(rs.getString("password"));
+				User.setGender(rs.getString("gender"));
+				User.setTmdbsessionid(rs.getString("tmdbsessionid"));
+				User.setTmdbrequesttoken(rs.getString("tmdbrequesttoken"));
+				System.out.println("Login successful.");
 			}
-			else 
-				result = "Login failed. Incorrect username or password.";
+			else
+				System.out.println("Login Failed. Incorrect username or password.");
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return result;
-	}
-	
-	//-----------------------------------------------------------------------------------------------------------------
-	public void logout() {
-		User.setSessionid(null);
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
@@ -171,12 +171,12 @@ public class DB {
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
-	public void saveTmdbAccessToken(String username, String tmdbaccesstoken) {
+	public void saveTmdbAccessToken(String tmdbaccesstoken) {
 		try {
 			Connection connection = ConnectionProvider.getConnection();
 			PreparedStatement stmt = connection.prepareStatement("UPDATE users SET tmdbsessionid=? WHERE username=?");
 			stmt.setString(1, tmdbaccesstoken);
-			stmt.setString(2, username);
+			stmt.setString(2, User.getUsername());
 			stmt.executeUpdate();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
