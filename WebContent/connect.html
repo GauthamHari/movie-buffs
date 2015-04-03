@@ -5,7 +5,27 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link href="about.css" rel="stylesheet" />
 <script>
+base_url="http://localhost:8082/twitterloop/rest/user/saveaccesstoken";
 $(document).ready(function() {
+	$("#submit").on('click', function() {  
+		base_url = base_url + "?sessionid=" + accesstoken.value;
+		postData();
+	});
+	function postData(){
+        $.ajax({
+                type: "POST",
+                url: base_url,
+                success: function (data, status, jqXHR) {
+                    alert("Session Id saved successfully.");
+                    window.location.href='http://localhost:8082/twitterloop/login.html';
+                },
+                error: function (jqXHR, status) {
+                    console.log(status);
+                    alert('Failed to save access token.');
+                    base_url="http://localhost:8082/twitterloop/rest/user/saveaccesstoken";
+                }
+             });
+       }
 	$("#logout").on('click', function() {  
 		$.get("http://localhost:8082/twitterloop/rest/user/logout", function(data, status) {  	
 			alert("Logout Successful");
@@ -36,15 +56,12 @@ $(document).ready(function() {
 <body>
 <input type="button" id=logout value="Logout" width="1000" height=1000> 
 <input type="button" id=deregister value="Delete Account" width="1000" height=1000> <br> <br>
-<center> <a href="http://localhost:8082/twitterloop/rest/account" target="_blank"> My Account </a> <br> <br> </center>
-<center> <a href="http://localhost:8082/twitterloop/rest/account/lists" target="_blank"> My Lists </a> <br> <br> </center>
-<center> <a href="http://localhost:8082/twitterloop/rest/account/rated/movies" target="_blank"> Rated Movies </a> <br> <br> </center>
-<center> <a href="http://localhost:8082/twitterloop/rest/account/favorite/movies" target="_blank"> Favorite Movies </a> <br> <br> </center>
-<center> <a href="http://localhost:8082/twitterloop/rest/account/watchlist/movies" target="_blank"> Watchlist Movies </a> <br> <br> </center>
-<center> <a href="http://localhost:8082/twitterloop/rest/genre/getgenrelist" target="_blank"> Genre List </a> <br> <br> </center>
-<center> <a href="http://localhost:8082/twitterloop/rest/movies/getmoviesupcoming" target="_blank"> Upcoming Movies </a> <br> <br> </center>
-<center> <a href="http://localhost:8082/twitterloop/rest/movies/getmoviesnowplaying" target="_blank"> Now Playing Movies </a> <br> <br> </center>
-<center> <a href="http://localhost:8082/twitterloop/rest/movies/getmoviespopular" target="_blank"> Popular Movies </a> <br> <br> </center>
-<center> <a href="http://localhost:8082/twitterloop/rest/movies/getmoviestoprated" target="_blank"> Top Rated Movies </a> <br> <br> </center>
+<center> <font color="Gold"> Step 1: </font> 
+<a href="http://localhost:8082/twitterloop/rest/user/getrequesttoken" target="_blank"> Connect with The Movie DataBase (TMDb) </a> </center> <br> <br>
+<center> <font color="Gold"> Step 2: </font> 
+<a href="http://localhost:8082/twitterloop/rest/user/getaccesstoken" target="_blank"> Get TMDb Session Id </a> </center> <br> <br>
+<center> <font color="Gold"> TMDb Session Id: </font>
+<input type="text" id=accesstoken>
+<input type="button" id=submit value="Save Session Id"> <br> </center>
 </body>
 </html>
