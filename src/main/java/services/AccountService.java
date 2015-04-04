@@ -2,7 +2,10 @@ package services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import util.Constants;
+
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -10,8 +13,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import model.User;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import info.movito.themoviedbapi.*;
 import info.movito.themoviedbapi.TmdbAccount.MovieListResultsPage;
 import info.movito.themoviedbapi.model.*;
@@ -173,7 +179,7 @@ public class AccountService {
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// 8) Remove a movie from an account's favorites list
-	@POST
+	@DELETE
 	@Path("/remove/favorite/movie")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response removeFavoriteMovie(@QueryParam("offset") int offset, @QueryParam("count") int count, 
@@ -213,7 +219,7 @@ public class AccountService {
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// 10) Remove a movie from an account's watch list
-	@POST
+	@DELETE
 	@Path("/remove/watchlist/movie")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response removeWatchlistMovie(@QueryParam("offset") int offset, @QueryParam("count") int count, 

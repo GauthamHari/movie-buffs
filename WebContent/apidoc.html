@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>API Documentation</title>
+<style>
+h1 {
+	text-align: center;
+}
+</style>
+</head>
+<body>
+	<h1> API Documentation</h1>
+	<center> Movie-buffs is an application which uses The Movie Database (TMDb) API and provides the following features to the users. </center> <br>
+	<center> <table>
+	<tr> <td> <h2> 1) General features </h2> </td> </tr>
+	<tr> <td> - Top rated movies </td> </tr>
+	<tr> <td> - Upcoming movies </td> </tr>
+	<tr> <td> - Now playing movies </td> </tr>
+	<tr> <td> - Popular movies </td> </tr>
+	<tr> <td> - Popular people </td> </tr> 
+	
+	<tr> <td> <h2> 2) Account Features </h2> </td> </tr>  
+	<tr> <td> - Get details </td> </tr>
+	<tr> <td> - Get lists (created and marked as favorite) </td> </tr>
+	<tr> <td> - Get favorite movie list </td> </tr>
+	<tr> <td> - Get movie watch list </td> </tr>
+	<tr> <td> - Get rated movie list </td> </tr>
+	<tr> <td> - Get the account state for a movie (rated, marked as favorite or on watch list) </td> </tr> 
+	
+	<tr> <td> <h2>	3) Account Session Features </h2> </td> </tr>
+	<tr> <td> - Rate a movie </td> </tr> 
+	<tr> <td> - Add/remove a movie to your favorites </td> </tr> 
+	<tr> <td> - Add/remove a movie to your watch list </td> </tr> 
+	
+	<tr> <td> <h2>	4) Movie Features </h2> </td> </tr>
+	<tr> <td> - Search: Search for movies with a text query. </td> </tr>
+	<tr> <td> - Get details </td> </tr>
+	<tr> <td> - Primary info </td> </tr>
+	<tr> <td> - Alternative titles </td> </tr>
+	<tr> <td> - Cast </td> </tr>
+	<tr> <td> - Crew </td> </tr>
+	<tr> <td> - Images (posters, backdrops) </td> </tr> 
+	<tr> <td> - Plot keywords </td> </tr>
+	<tr> <td> - Release information </td> </tr>
+	<tr> <td> - Trailers </td> </tr>
+	<tr> <td> - Translations </td>
+	<tr> <td> - Similar movies </td> </tr> 
+	
+	<tr> <td> <h2>	5) People Features </h2> </td> </tr>
+	<tr> <td> - Search: Search for people with a text query. </td> </tr>
+	<tr> <td> - Get details </td> </tr>
+	<tr> <td> - Primary info </td> </tr>
+	<tr> <td> - Credits </td> </tr>
+	<tr> <td> - Images (profile) </td> </tr>
+	
+	<tr> <td> <h2> 6) List Features </h2> </td> </tr>
+	<tr> <td> - Search </td> </tr> 
+	<tr> <td> - Get list movies </td> </tr>
+	
+	<tr> <td> <h2> 7) Genre Features </h2> </td> </tr>
+	<tr> <td> - Get list </td> </tr>
+	<tr> <td> - Get movies </td> </tr>
+	</table> </center> <br> <br> <hr> <br>
+	
+	<center> <table> 
+	<tr> <td> <h2> 1) Account Services </h2> </td> </tr>
+	<tr> <td> 1) Get the basic information for an account. </td> </tr>
+	<tr> <td> @GET : /account </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 2) Get the lists that you have created and marked as a favorite. </td> </tr>
+	<tr> <td> @GET : /account/lists </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 3) Get the list of rated movies (and associated rating) for an account. </td> </tr>
+	<tr> <td> @GET : /account/rated/movies </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 4) Get the list of favorite movies for an account. </td> </tr>
+	<tr> <td> @GET : /account/favorite/movies </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 5) Get the list of movies on an accounts watchlist. </td> </tr>
+	<tr> <td> @GET : /account/watchlist/movies </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 6) Rate a movie. </td> </tr>
+	<tr> <td> @POST : /account/rate/movie?movieid=&rating= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 7) Add a movie to an account's favorites list. </td> </tr>
+	<tr> <td> @POST : /account/add/favorite/movie?movieid= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 8) Remove a movie from an account's favorites list. </td> </tr>
+	<tr> <td> @DELETE : /account/add/favorite/movie?movieid= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 9) Add a movie to an account's watch list. </td> </tr>
+	<tr> <td> @POST : /account/add/watchlist/movie?movieid= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 10) Remove a movie from an account's watch list. </td> </tr>
+	<tr> <td> @DELETE : /account/add/watchlist/movie?movieid= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	
+	<tr> <td> <h2> 2) Genre Services </h2> </td> </tr>
+	<tr> <td> 1) Browse all genres. </td> </tr>
+	<tr> <td> @GET : /genre/getgenrelist </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 2) Browse all movies in a particular genre. </td> </tr>
+	<tr> <td> @GET : /genre/getgenremovies/{genreid} </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	
+	<tr> <td> <h2> 3) List Services </h2> </td> </tr>
+	<tr> <td> 1) Create a new list. </td> </tr>
+	<tr> <td> @POST : /list/create?name=&description= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 2) Delete an existing list. </td> </tr>
+	<tr> <td> @DELETE : /list/delete?listid= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 3) Add new movies to a list. </td> </tr>
+	<tr> <td> @POST : /list/add?listid=&movieid= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 4) Delete movies from a list. </td> </tr>
+	<tr> <td> @DELETE : /list/remove?listid=&movieid= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 5) Check to see if a movie ID is already added to a list. </td> </tr>
+	<tr> <td> @GET : /list/status?listid=&movieid= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	
+	<tr> <td> <h2> 4) Movie Services </h2> </td> </tr>
+	<tr> <td> 1) Get a movie by id. </td> </tr>
+	<tr> <td> @GET : /movies/getmovie/{movieid} </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 2) Get alternative titles for a movie. </td> </tr>
+	<tr> <td> @GET : /movies/getmoviealternativetitles/{movieid} </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 3) Get credits for a movie. </td> </tr>
+	<tr> <td> @GET : /movies/getmoviecredits/{movieid} </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 4) Get Images for a movie. </td> </tr>
+	<tr> <td> @GET : /movies/getmovieimages/{movieid} </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 5) Get Keywords for a movie. </td> </tr>
+	<tr> <td> @GET : /movies/getmoviekeywords/{movieid} </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 6) Get Release Info for a movie. </td> </tr>
+	<tr> <td> @GET : /movies/getmoviereleaseinfo/{movieid} </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 7) Get Videos for a movie. </td> </tr>
+	<tr> <td> @GET : /movies/getmovievideos/{movieid} </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 8) Get Translations for a movie. </td> </tr>
+	<tr> <td> @GET : /movies/getmovietranslations/{movieid} </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 9) Get a list of similar movies for a movie. </td> </tr>
+	<tr> <td> @GET : /movies/getmoviessimilar/{movieid} </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 10) Get a list of upcoming movies. </td> </tr>
+	<tr> <td> @GET : /movies/getmoviesupcoming </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 11) Get a list of now-playing movies. </td> </tr>
+	<tr> <td> @GET : /movies/getmoviesnowplaying </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 12) Get a list of popular movies. </td> </tr>
+	<tr> <td> @GET : /movies/getmoviespopular </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 13) Get a list of top-rated movies. </td> </tr>
+	<tr> <td> @GET : /movies/getmoviestoprated </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 14) Get a list of forthcoming movies. </td> </tr>
+	<tr> <td> @GET : /movies/getmoviesforthcoming </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	
+	<tr> <td> <h2> 5) People Services </h2> </td> </tr>
+	<tr> <td> 1) Get the general person information for a specific id. </td> </tr>
+	<tr> <td> @GET : /people/person?personid= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 2) Get the credits for a specific person id. </td> </tr>
+	<tr> <td> @GET : /people/credits?personid= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 3) Get the images for a specific person id. </td> </tr>
+	<tr> <td> @GET : /people/images?personid= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 4) Get the list of popular people on The Movie Database. </td> </tr>
+	<tr> <td> @GET : /people/popular </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	
+	<tr> <td> <h2> 6) Search Services </h2> </td> </tr>
+	<tr> <td> 1) Search for movies by title. </td> </tr>
+	<tr> <td> @GET : /search/movie/{title} </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 2) Search for people by name. </td> </tr>
+	<tr> <td> @GET : /search/person/{name} </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 3) Search for keywords by name. </td> </tr>
+	<tr> <td> @GET : /search/keyword/{name} </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 4) Search for lists by name and description. </td> </tr>
+	<tr> <td> @GET : /search/list/{name} </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	
+	<tr> <td> <h2> 7) Twitter Services </h2> </td> </tr>
+	<tr> <td> 1) To get request token for twitter. </td> </tr>
+	<tr> <td> @GET : /twitter/request?user= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 2) To get access token for twitter. </td> </tr>
+	<tr> <td> @GET : /twitter/success?oauth_token=&oauth_verifier= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 3) To post in twitter on behalf of a particular user. </td> </tr>
+	<tr> <td> @GET : /twitter/status?user= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 4) To post in twitter on behalf of all users. </td> </tr>
+	<tr> <td> @GET : /twitter/post </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	
+	<tr> <td> <h2> 8) User Services </h2> </td> </tr>
+	<tr> <td> 1) To register a new user. </td> </tr>
+	<tr> <td> @POST : /user/register?username=&password=&firstname=&lastname=&gender= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 2) To login to the application. </td> </tr>
+	<tr> <td> @GET : /user/login?username=&password= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 3) To get TMDb request token. </td> </tr>
+	<tr> <td> @GET : /user/getrequesttoken </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 4) To get TMDb access token. </td> </tr>
+	<tr> <td> @GET : /user/getaccesstoken </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 5) To save TMDb access token. </td> </tr>
+	<tr> <td> @POST : /user/saveaccesstoken?sessionid= </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 6) To logout of the application. </td> </tr>
+	<tr> <td> @GET : /user/logout </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	<tr> <td> 7) To delete an existing user. </td> </tr>
+	<tr> <td> @DELETE : /user/deregister </td> </tr>
+	<tr> <td> &nbsp; </td> </tr>
+	</table> </center>
+</body>
+</html>

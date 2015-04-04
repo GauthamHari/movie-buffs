@@ -86,7 +86,7 @@ public class ListService {
 	//-----------------------------------------------------------------------------------------------------------------
 	// 4) This method lets users delete movies from a list that they created. 
 	@Path("/remove")
-	@POST
+	@DELETE
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response removeMovie(@QueryParam("offset") int offset, @QueryParam("count") int count, 
 		@QueryParam("listid") String listid, @QueryParam("movieid") int movieid) {
