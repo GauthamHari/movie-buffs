@@ -2,19 +2,26 @@ package services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import util.Constants;
+
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import info.movito.themoviedbapi.*;
 import info.movito.themoviedbapi.model.*;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
 import info.movito.themoviedbapi.model.keywords.Keyword;
+
+import com.sendgrid.*;
 
 @Path("/movies")
 public class MovieService {
@@ -335,9 +342,9 @@ public class MovieService {
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// 14) Get a list of forthcoming movies
-	@GET
+	@POST
 	@Path("/getmoviesforthcoming")
-	@Produces({ MediaType.TEXT_PLAIN })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getForthcomingMovies() {		
 		
 		int numberOfItems = 0;
@@ -351,6 +358,21 @@ public class MovieService {
 			sb.append(System.lineSeparator());
 			sb.append((++numberOfItems) + ") " + item.getOriginalTitle() + " - " + item.getReleaseDate());
 		}
-		return Response.status(200).entity(sb.toString()).build();
+		
+		SendGrid sendgrid = new SendGrid("","");
+		SendGrid.Email email = new SendGrid.Email();
+		email.addTo("ghari1@unh.newhaven.edu");
+		email.setFrom("hg1990@gmail.com");
+		email.setSubject("List of upcoming movies");
+		email.setText(sb.toString());
+		
+		try {
+			  SendGrid.Response response = sendgrid.send(email);
+			  System.out.println(response.getMessage());
+			  System.out.println(response.getStatus());
+		} catch (SendGridException e) {
+			  System.out.println(e);
+		}
+		return Response.status(200).build();
 	}
 }

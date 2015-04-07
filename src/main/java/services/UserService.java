@@ -16,12 +16,33 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import commands.DB;
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbAuthentication;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 @Path("/user")
 public class UserService {
 	private static String apikey = "e688f51c2289b388729acfe277687a99";
 	TmdbAuthentication authentication = new TmdbApi(apikey).getAuthentication();
 	ObjectMapper mapper = new ObjectMapper();
+	
+	 /**
+	  * The byte[] returned by MessageDigest does not have a nice
+	  * textual representation, so some form of encoding is usually performed.
+	  *
+	  * This implementation follows the example of David Flanagan's book
+	  * "Java In A Nutshell", and converts a byte array into a String
+	  * of hex characters.
+	  */
+	  static private String hexEncode( byte[] aInput){
+	    StringBuffer result = new StringBuffer();
+	    char[] digits = {'0', '1', '2', '3', '4','5','6','7','8','9','a','b','c','d','e','f'};
+	    for (int idx = 0; idx < aInput.length; ++idx) {
+	      byte b = aInput[idx];
+	      result.append( digits[ (b&0xf0) >> 4 ] );
+	      result.append( digits[ b&0x0f] );
+	    }
+	    return result.toString();
+	  }
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	@POST
@@ -32,7 +53,9 @@ public class UserService {
 			@QueryParam("gender") String gender) {
 		DB db = new DB();
 		try {
-			if(db.addUser(username, password, firstname, lastname, gender))
+			MessageDigest sha = MessageDigest.getInstance("SHA-1");
+		    byte[] hashedPassword = sha.digest(password.getBytes());
+			if(db.addUser(username, hexEncode(hashedPassword), firstname, lastname, gender))
 				return Response.status(201).build();
 			else
 				return Response.status(500).build();
@@ -49,7 +72,9 @@ public class UserService {
 	public Response login(@QueryParam("username") String username, @QueryParam("password") String password) {
 		DB db = new DB();
 		try {
-			if(db.login(username, password))
+			MessageDigest sha = MessageDigest.getInstance("SHA-1");
+		    byte[] hashedPassword = sha.digest(password.getBytes());
+			if(db.login(username, hexEncode(hashedPassword)))
 				return Response.status(200).build();
 			else
 				return Response.status(500).build();
